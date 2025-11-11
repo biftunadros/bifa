@@ -1,0 +1,160 @@
+--         GROUP:3
+--  Title:onlineshoppingsystem
+--     NAME              ID
+--1 HANA NIGUS        UGR/94290/16
+--2 BIFTU NADROS      UGR/91538/16
+--3 MESAY BIRHANU     UGR/92009/16
+--4 FISEHA ALEMU      UGR/91770/16
+--5 MEGFIRA ABDELA    UGR/91970/16
+
+
+CREATE DATABASE onlineshoppingsystem
+use onlineshoppingsystem
+
+
+CREATE TABLE Sellers (
+  SellerID varchar(50) PRIMARY KEY,
+  SellerName VARCHAR(50),
+  StockLimit INT,
+);
+CREATE TABLE Customers (
+  CustomerID varchar(20) PRIMARY KEY,
+  CustomerName VARCHAR(20)
+);
+
+CREATE TABLE Products
+(
+  ProductID varchar(50) PRIMARY KEY,
+  ProductName VARCHAR(50),
+  Category CHAR(50), 
+  Price INT,
+  SellerID  varchar(50),
+  
+  FOREIGN KEY (SellerID) REFERENCES Sellers(SellerID)
+ 
+);
+
+CREATE TABLE Orders(
+  OrderID varchar(50) PRIMARY KEY,
+  CustomerID varchar(20),
+  OrderDate date, 
+  ProductID varchar(50) ,
+   FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
+   FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
+);
+
+Insert into Sellers(SellerID,SellerName,StockLimit)
+values ('SELL001','Jewelry Store',180),
+       ('SELL002','Fashion Hub',700),
+       ('SELL003','Home Essential ',450),
+       ('SELL004','Tech Store',200),
+       ('SELL005','Book Store',500),
+       ('SELL006','Lexury Watches',300),
+       ('SELL007','Sport Gear',2),
+       ('SELL008','Mobile store',900),
+       ('SELL009','Gadget Store',800),
+       ('SELL010','Skin Care Product',500);
+Insert into Customers(CustomerID,CustomerName) 
+values    ('CUST001','Jhon Doe'),
+          ('CUST002','Hana Nigus'),
+	  ('CUST003','Biftu Nadros'),
+	  ('CUST004','Messay Birhanu'), 
+	  ('CUST005','Fisha Alemu'),
+	  ('CUST006','Megfira Abdela'),
+	  ('CUST007','Doka Addis'),
+	  ('CUST008','Henok Besntu'),
+	  ('CUST009','Hirut Mntesnot'),
+	  ('CUST010','Besntu Ktaw');
+insert into Products(ProductID,ProductName,Category,Price,SellerID)
+values ('PRO001','Smartphon','Electronics',499.5,'SELL004'),
+       ('PRO002','Headphone','Electronics',75.6,'SELL004'),
+	   ('PRO003','Laptope','Electronics',899.5,'SELL004'),
+	   ('PRO004','Camera','Electronics',999.5,'SELL004'),
+	   ('PRO005','Mans Wear','Clothing',85,'SELL002'),
+	   ('PRO006','Microwave','Home Application',200,'SELL003'),
+	   ('PRO007','Fiction','Books',15.5,'SELL005'),
+	   ('PRO008','Hand Ball','Sports',199.5,'SELL007'),
+	   ('PRO009','Makeup','Health & Beauty',99.9,'SELL010'),
+	   ('PRO010','Gold Ring','Jewelry',499.5,'SELL001'),
+	   ('PRO011','Basket Ball','Sports',29.5,'SELL007'),
+	   ('PRO012','soccer Ball','Sports',24.5,'SELL007'),
+	   ('PRO013','Pen','Office Supplies',3.5,'SELL005'),
+	   ('PRO014','Note Book','Office Supplies',4.5,'SELL005'),
+	   ('PRO015','Painting Kit','Art & craft',44.5,'SELL008'),
+	   ('PRO016','Apple iPhone 15 Pro','Electronics',55.5,'SELL004'),
+	   ('PRO017','Samsung 65" 4K Smart TV','Electronics',64.5,'SELL004'),
+	   ('PRO018','Sony WH-1000XM5 Headphones','Electronics',74.5,'SELL004'),
+	   ('PRO019','Dell XPS 15 Laptop','Electronics',99.5,'SELL004'),
+	   ('PRO020','Apple iPad Air','Electronics',25.5,'SELL004');
+
+Insert into Orders(OrderID,CustomerID,OrderDate,ProductID)
+values     ('ORD001','CUST001','2025-03-01','PRO001'),
+           ('ORD002','CUST002','2025-03-03','PRO002'),
+           ('ORD003','CUST003','2025-03-04','PRO003'),
+           ('ORD004','CUST004','2025-03-05','PRO004'),
+	   ('ORD005','CUST005','2025-03-26','PRO005'),
+	   ('ORD006','CUST006','2025-03-27','PRO006'),
+	   ('ORD007','CUST007','2025-03-28','PRO007'),
+	   ('ORD008','CUST008','2025-03-29','PRO008'),
+	   ('ORD009','CUST009','2025-03-30','PRO009'),
+	   ('ORD010','CUST010','2025-03-11','PRO010');
+
+ select*from Products
+ select*from Orders
+ select*from Customers
+ select*from Sellers
+
+
+select*from  Products
+
+select*from Products where Category='Electronics'
+
+select distinct Category from Products
+
+select COUNT(*) Total_product from Products
+
+select S.sellerName , count(P.productID) as Total_products from Sellers as S
+join Products as P on S.SellerID=P.SellerID
+group by S.sellerName;
+ 
+select S.SellerName,COUNT(P.ProductID) Total_Product from Sellers as S
+join Products as P on S.SellerID=p.SellerID
+group by S.SellerName
+having COUNT(P.ProductID)>=3
+
+select C.CustomerName,P.ProductID from Customers as C
+join Orders as O on C.CustomerID=O.CustomerID
+join Products as P on O.ProductID=P.ProductID
+
+select S.SellerName ,COUNT(P.ProductID) Total_Product from Sellers S
+left join Products  P on S.SellerID=P.SellerID
+group by S.SellerName
+
+select S.SellerName ,COUNT(P.ProductID) Total_Product From Sellers as S
+join Products P on S.SellerID=P.SellerID
+group by S.SellerName
+having COUNT(P.ProductID)>5
+ 
+select OrderID, OrderDate from Orders where OrderDate>dateadd(Day,-7,getdate()) 
+
+
+insert into Products(ProductID,ProductName,Category,Price,SellerID)
+values ('PRO021','Smartwatch','Wearable',55.5,'SELL006');
+
+
+Declare @CustomerID varchar(20)=(select CustomerID from Customers where  CustomerName='John Doe')
+Declare @ProductID varchar(50)=(select ProductID from Products where ProductName='Laptop')
+Insert into Orders(OrderID,CustomerID,OrderDate)
+values(NEWID(),@CustomerID,GETDATE())
+
+update Products set price=price*0.9 
+
+update Products set price=price*0.8 where price>(select  AVG(Price) from Products)
+
+delete from Products where Price <5
+
+Delete from Orders where ProductID in(select ProductID from  Products where SellerID in( select s.SellerID from Sellers as s
+                                                     join Products as p on s.SellerID=p.SellerID
+	                                             group by s.SellerID,s.StockLimit
+	                                             having count(p.ProductID)>s.StockLimit ));
+									
